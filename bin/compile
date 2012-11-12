@@ -168,9 +168,14 @@ export CPATH="$INCLUDE_PATH"
 export CPPPATH="$INCLUDE_PATH"
 
 # install dependencies with npm
-echo "-----> Installing dependencies with npm"
-run_npm "install --production"
-run_npm "rebuild"
+echo "-----> Installing etherpad dependencies with npm"
+
+echo "web: node node/server.js" > Procfile
+mkdir -p node_modules
+cp -r src node_modules/ep_etherpad-lite
+cd node_modules/ep_etherpad-lite
+npm install
+
 echo "Dependencies installed" | indent
 
 echo "-----> Building runtime environment"
