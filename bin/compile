@@ -42,8 +42,8 @@ function indent() {
 function run_npm() {
   command="$1"
 
-  cd $BUILD_DIR
-  HOME="$BUILD_DIR" $VENDORED_NODE/bin/node $VENDORED_NPM/cli.js $command 2>&1 | indent
+  cd $BUILD_DIR/node_modules/ep_etherpad-lite
+  HOME="$BUILD_DIR/node_modules/ep_etherpad-lite" $VENDORED_NODE/bin/node $VENDORED_NPM/cli.js $command 2>&1 | indent
 
   if [ "${PIPESTATUS[*]}" != "0 0" ]; then
     echo " !     Failed to $command dependencies with npm"
@@ -72,7 +72,7 @@ function resolve_version() {
 }
 
 function package_engine_version() {
-  version=$(cat $BUILD_DIR/package.json | $bootstrap_node/bin/node $LP_DIR/vendor/json/json engines.$1 2>/dev/null)
+  version=$(cat $BUILD_DIR/src/package.json | $bootstrap_node/bin/node $LP_DIR/vendor/json/json engines.$1 2>/dev/null)
   if [ $? == 0 ]; then
     echo $version | sed -e 's/\([<>=]\) /\1/g'
   fi
@@ -170,11 +170,11 @@ export CPPPATH="$INCLUDE_PATH"
 # install dependencies with npm
 echo "-----> Installing etherpad dependencies with npm"
 
-echo "web: node node/server.js" > Procfile
-mkdir -p node_modules
-cp -r src node_modules/ep_etherpad-lite
-cd node_modules/ep_etherpad-lite
-npm install
+mkdir -p $BUILD_DIR/node_modules
+cp -r $BUILD_DIR/src $BUILD_DIR/node_modules/ep_etherpad-lite
+
+run_npm "install --production"
+run_npm "rebuild"
 
 echo "Dependencies installed" | indent
 
