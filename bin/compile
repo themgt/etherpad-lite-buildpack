@@ -55,7 +55,7 @@ function run_npm() {
 }
 
 function manifest_versions() {
-  curl "http://${S3_BUCKET}.s3.amazonaws.com/manifest.${1}" -s -o - | tr -s '\n' ' '
+  curl "https://${S3_BUCKET}.s3.amazonaws.com/manifest.${1}" -s -o - | tr -s '\n' ' '
 }
 
 function resolve_version() {
@@ -97,7 +97,7 @@ function package_download() {
   location="$3"
 
   mkdir -p $location
-  package="http://${S3_BUCKET}.s3.amazonaws.com/$engine-$version.tgz"
+  package="https://${S3_BUCKET}.s3.amazonaws.com/$engine-$version.tgz"
   curl $package -s -o - | tar xzf - -C $location
 }
 
@@ -131,8 +131,8 @@ CACHE_STORE_DIR="$CACHE_DIR/node_modules/$NODE_VERSION"
 CACHE_TARGET_DIR="$BUILD_DIR/node_modules"
 
 # s3 packages
-NODE_PACKAGE="http://${S3_BUCKET}.s3.amazonaws.com/nodejs-${NODE_VERSION}.tgz"
-SCONS_PACKAGE="http://${S3_BUCKET}.s3.amazonaws.com/scons-${SCONS_VERSION}.tgz"
+NODE_PACKAGE="https://${S3_BUCKET}.s3.amazonaws.com/nodejs-${NODE_VERSION}.tgz"
+SCONS_PACKAGE="https://${S3_BUCKET}.s3.amazonaws.com/scons-${SCONS_VERSION}.tgz"
 
 # vendor directories
 VENDORED_NODE="$(mktmpdir node)"
